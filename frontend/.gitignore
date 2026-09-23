@@ -1,8 +1,17 @@
-node_modules/
-target/
-.idea/
-.vscode/
-*.iml
-.DS_Store
-Thumbs.db
+# Angular cache e build
+.angular/
 dist/
+node_modules/
+.sass-cache/
+connect.lock/
+coverage/
+libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+typings/
+*.js.map
+
+# Environment files locali (se vuoi tenere segreti)
+.env
+.env.local
