@@ -10,8 +10,9 @@ Base URL: `http://localhost:8080/api`
 1. Registrazione
 2. Login
 3. Profilo Utente
-4. Formato Errori
-5. Autenticazione JWT
+4. Categorie
+5. Formato Errori
+6. Autenticazione JWT
 
 ---
 
@@ -45,7 +46,7 @@ Crea un nuovo utente nel sistema.
     }
 
 **Errori:**
-- `400 Bad Request` → Validazione fallita (vedi sezione 4)
+- `400 Bad Request` → Validazione fallita (vedi sezione 5)
 - `409 Conflict` → Email o username già registrati
 
 ---
@@ -109,9 +110,91 @@ Restituisce i dati dell'utente autenticato.
 
 ---
 
-## 4. Formato Errori
+## 4. Categorie
 
-### Errore generico (400 / 401 / 409 / 500)
+Tutte le operazioni sulle categorie richiedono l'header:
+
+    Authorization: Bearer <token>
+
+Ogni utente vede e può modificare **solo le proprie categorie**. Tentare di accedere a categorie di altri utenti restituisce `403 Forbidden`.
+
+### 4.1 Elenco categorie
+
+Restituisce tutte le categorie dell'utente, ordinate alfabeticamente.
+
+**Endpoint:** `GET /api/categories`
+
+**Risposta Successo (200 OK):**
+
+    [
+      { "id": 1, "name": "Social" },
+      { "id": 2, "name": "Lavoro" }
+    ]
+
+### 4.2 Crea categoria
+
+**Endpoint:** `POST /api/categories`
+
+**Headers:**
+
+    Content-Type: application/json
+    Authorization: Bearer <token>
+
+**Body:**
+
+    { "name": "Social" }
+
+**Validazione:**
+- `name`: obbligatorio, massimo 50 caratteri
+
+**Risposta Successo (201 Created):**
+
+    { "id": 1, "name": "Social" }
+
+**Errori:**
+- `400 Bad Request` → Validazione fallita (nome vuoto o troppo lungo)
+
+### 4.3 Modifica categoria
+
+**Endpoint:** `PUT /api/categories/{id}`
+
+**Headers:**
+
+    Content-Type: application/json
+    Authorization: Bearer <token>
+
+**Body:**
+
+    { "name": "Social Media" }
+
+**Risposta Successo (200 OK):**
+
+    { "id": 1, "name": "Social Media" }
+
+**Errori:**
+- `400 Bad Request` → Validazione fallita
+- `403 Forbidden` → La categoria esiste ma appartiene a un altro utente
+- `404 Not Found` → Categoria inesistente
+
+### 4.4 Elimina categoria
+
+**Endpoint:** `DELETE /api/categories/{id}`
+
+**Headers:**
+
+    Authorization: Bearer <token>
+
+**Risposta Successo (204 No Content):** nessuna risposta
+
+**Errori:**
+- `403 Forbidden` → La categoria esiste ma appartiene a un altro utente
+- `404 Not Found` → Categoria inesistente
+
+---
+
+## 5. Formato Errori
+
+### Errore generico (400 / 401 / 403 / 404 / 500)
 
     {
       "error": "Descrizione dell'errore"
@@ -119,7 +202,7 @@ Restituisce i dati dell'utente autenticato.
 
 ### Errore di validazione (400 Bad Request)
 
-Quando fallisce la validazione dei campi (email storta, password corta...):
+Quando fallisce la validazione dei campi (email storta, password corta, nome vuoto...):
 
     {
       "error": "Validazione fallita",
@@ -138,7 +221,7 @@ Quando fallisce la validazione dei campi (email storta, password corta...):
 
 ---
 
-## 5. Autenticazione JWT
+## 6. Autenticazione JWT
 
 ### Come usare il token
 
@@ -161,9 +244,11 @@ Tutti gli endpoint TRANNE `/api/auth/**` richiedono un token JWT valido nell'hea
 
 ## 🚀 Esempio di flusso completo
 
-1. **Registrazione** → POST /api/auth/register → 201 Created
-2. **Login** → POST /api/auth/login → 200 OK + token
-3. **Profilo** → GET /api/users/me con header Authorization → 200 OK + dati utente
+1. **Registrazione** → `POST /api/auth/register` → 201 Created
+2. **Login** → `POST /api/auth/login` → 200 OK + token
+3. **Profilo** → `GET /api/users/me` con header Authorization → 200 OK + dati utente
+4. **Crea categoria** → `POST /api/categories` con token → 201 Created
+5. **Lista categorie** → `GET /api/categories` con token → 200 OK + elenco
 
 ---
 
@@ -173,13 +258,14 @@ Tutti gli endpoint TRANNE `/api/auth/**` richiedono un token JWT valido nell'hea
 2. Usa un HttpInterceptor per aggiungere automaticamente `Authorization: Bearer <token>` a tutte le richieste
 3. Se ricevi 401 o 403 → token scaduto/invalido → riporta l'utente al login
 4. Per gli errori di validazione usa il campo `fields` per mostrare i messaggi sotto le caselle del form
+5. Per le categorie mostra i messaggi `403` come "Non hai i permessi per questa categoria"
 
 ---
 
 ## 🔜 Prossime API (da implementare)
 
-- Categorie (CRUD)
 - PasswordEntry (il vault)
 - Generatore password
 - Ricerca
 - Export/Import vault
+- Refresh token JWT
