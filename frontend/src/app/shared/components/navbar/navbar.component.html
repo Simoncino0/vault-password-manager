@@ -1,0 +1,11 @@
+<nav class="navbar" *ngIf="isLoggedIn">
+  <span class="brand">🔐 Vault</span>
+  <div class="links">
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/categories" routerLinkActive="active">Categorie</a>
+  </div>
+  <div class="user-area">
+    <span class="username">{{ username }}</span>
+    <button (click)="logout()">Logout</button>
+  </div>
+</nav>

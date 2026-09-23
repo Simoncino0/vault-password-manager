@@ -1,0 +1,43 @@
+.dashboard {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+
+  .subtitle {
+    color: #64748b;
+    margin-bottom: 2rem;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+
+    .stat-card {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+
+      .stat-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #1e293b;
+      }
+
+      .stat-label {
+        color: #64748b;
+      }
+    }
+  }
+
+  .member-since {
+    margin-top: 2rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+  }
+}
