@@ -19,4 +19,12 @@ export const routes: Routes = [
       import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
   { path: '**', redirectTo: '/login' },
+  {
+    path: 'categories',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./categories/category-list/category-list.component').then(
+        (m) => m.CategoryListComponent,
+      ),
+  },
 ];

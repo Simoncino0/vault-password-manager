@@ -1,0 +1,59 @@
+<div class="category-page">
+  <h2>Le tue categorie</h2>
+
+  <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <!-- Form creazione -->
+  <form [formGroup]="createForm" (ngSubmit)="onCreate()" class="create-form">
+    <input type="text" formControlName="name" placeholder="Nome nuova categoria (es. Social)">
+    <button type="submit" [disabled]="createForm.invalid">+ Crea</button>
+  </form>
+  <div class="error-msg" *ngIf="createForm.get('name')?.errors?.['required'] && createForm.get('name')?.touched">
+    Il nome è obbligatorio.
+  </div>
+  <div class="error-msg" *ngIf="createForm.get('name')?.errors?.['apiError']">
+    {{ createForm.get('name')?.errors?.['apiError'] }}
+  </div>
+
+  <div class="loading" *ngIf="isLoading">Caricamento categorie...</div>
+
+  <!-- Tabella liste -->
+  <table class="category-table" *ngIf="!isLoading && categories.length > 0">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>Azioni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let category of categories">
+      <td>{{ category.id }}</td>
+      <td>
+        <form *ngIf="editingCategory?.id === category.id" [formGroup]="editForm" (ngSubmit)="onUpdate()" class="edit-form">
+          <input type="text" formControlName="name">
+          <button type="submit" [disabled]="editForm.invalid">Salva</button>
+          <button type="button" class="secondary" (click)="cancelEdit()">Annulla</button>
+        </form>
+        <span *ngIf="editingCategory?.id !== category.id">{{ category.name }}</span>
+      </td>
+      <td class="actions">
+        <ng-container *ngIf="deletePendingId === category.id; else normalActions">
+          <span class="confirm-text">Confermi?</span>
+          <button class="danger" (click)="onDelete(category)">Sì, elimina</button>
+          <button class="secondary" (click)="cancelDelete()">Annulla</button>
+        </ng-container>
+        <ng-template #normalActions>
+          <button (click)="startEdit(category)" [disabled]="editingCategory !== null">Modifica</button>
+          <button class="danger" (click)="askDelete(category)">Elimina</button>
+        </ng-template>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <p class="empty" *ngIf="!isLoading && categories.length === 0">
+    Nessuna categoria. Creane una qui sopra! 👆
+  </p>
+</div>

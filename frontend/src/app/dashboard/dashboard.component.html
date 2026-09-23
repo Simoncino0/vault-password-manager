@@ -1,0 +1,19 @@
+<div class="dashboard">
+  <h1>Ciao, {{ user?.username }}! 👋</h1>
+  <p class="subtitle">Benvenuto nel tuo Vault personale.</p>
+
+  <div class="stats">
+    <div class="stat-card">
+      <span class="stat-value">{{ categoryCount !== null ? categoryCount : '—' }}</span>
+      <span class="stat-label">Categorie</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">🔜</span>
+      <span class="stat-label">Password salvate</span>
+    </div>
+  </div>
+
+  <p class="member-since" *ngIf="user">
+    Membro dal: {{ user.createdAt | date:'dd/MM/yyyy' }}
+  </p>
+</div>
