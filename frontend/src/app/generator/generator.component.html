@@ -1,0 +1,23 @@
+<div class="generator-page">
+  <h2>Generatore password sicure</h2>
+
+  <div class="output" *ngIf="password">
+    <code>{{ password }}</code>
+    <button (click)="copy()">{{ copied ? '✔ Copiato!' : 'Copia' }}</button>
+  </div>
+  <app-password-strength [password]="password"></app-password-strength>
+
+  <div class="controls">
+    <label class="slider">
+      Lunghezza: <strong>{{ options.length }}</strong>
+      <input type="range" min="8" max="64" [(ngModel)]="options.length" (ngModelChange)="generate()">
+    </label>
+    <label><input type="checkbox" [(ngModel)]="options.useUppercase" (ngModelChange)="generate()"> Maiuscole (A-Z)</label>
+    <label><input type="checkbox" [(ngModel)]="options.useLowercase" (ngModelChange)="generate()"> Minuscole (a-z)</label>
+    <label><input type="checkbox" [(ngModel)]="options.useNumbers" (ngModelChange)="generate()"> Numeri (0-9)</label>
+    <label><input type="checkbox" [(ngModel)]="options.useSymbols" (ngModelChange)="generate()"> Simboli (!@#$...)</label>
+    <label><input type="checkbox" [(ngModel)]="options.excludeAmbiguous" (ngModelChange)="generate()"> Escludi caratteri ambigui (l, 1, I, O, 0...)</label>
+  </div>
+
+  <button class="generate-btn" (click)="generate()">🎲 Genera</button>
+</div>
